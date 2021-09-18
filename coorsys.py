@@ -5,6 +5,8 @@ class coordinate_system():
     precision=float()
     dimension=2
     objects={}
+    update_events=[]#用户自定义事件
+
     def __init__(self,precision=0.1,dimension=2):
         self.precision=abs(precision)
         if dimension<=2 and dimension>0:
@@ -20,7 +22,14 @@ class coordinate_system():
     def set_static(self,object_name,is_static=False):
         object_type=self.objects.get(object_name)[0]
         self.objects.update(object_name=(object_type,is_static))
-
+    
+    def update(self,deltatime):
+        for obj in self.objects:
+            if not self.objects[obj][1]:
+                self.objects[obj][0].update(deltatime)
+        for e in self.update_events:
+            e(self)#用户自定义函数必须带有至少一个参数用于接收这个self
+    
 class mass_point():
     name=str()
     mass=float()
@@ -30,6 +39,8 @@ class mass_point():
     velocity_y=float()
     acceleration_x=float()
     acceleration_y=float()
+
+    update_events=[]
     
     def __init__(self,name,mass=1,x=0,y=0):
         self.name=name
@@ -93,3 +104,6 @@ class mass_point():
 
         self.point_x+=delta_x
         self.point_y+=delta_y
+
+        for e in self.update_events:
+            e(self)#同上
