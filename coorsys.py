@@ -2,7 +2,7 @@ from . import exception
 import math
 
 class coordinate_system():
-    precision=float()
+    precision=float()#单位长度，实际的精度是由动画器里设置的Δt决定
     dimension=2
     objects={}
     update_events=[]#用户自定义事件
@@ -16,23 +16,45 @@ class coordinate_system():
     def add_object(self,object_name,object_type,is_static=False):
         self.objects.update(object_name=(object_type,is_static))
     
-    def del_object(self,object_name):
+    def rm_object(self,object_name):
         self.objects.pop(object_name)
 
     def set_static(self,object_name,is_static=False):
         object_type=self.objects.get(object_name)[0]
         self.objects.update(object_name=(object_type,is_static))
     
+    def get_attr(self):
+        return(
+            {
+                'precision':self.precision,
+                'dimension':self.dimension,
+            }
+        )
+    
+    def get_objects(self):
+        return self.objects
+    
+    def add_customized_event(self,event):
+        self.update_events.append(event)#备注：event是一个函数，可以带参数，用于接收传入的self
+    
+    def rm_customized_event(self,event):
+        self.update_events.remove(event)
+    
     def update(self,deltatime):
         for obj in self.objects:
             if not self.objects[obj][1]:
                 self.objects[obj][0].update(deltatime)
         for e in self.update_events:
-            e(self)#用户自定义函数必须带有至少一个参数用于接收这个self
-    
+            try:
+                e(self)#用户自定义函数必须带有至少一个参数用于接收这个self
+            except:
+                e()
+
 class mass_point():
     name=str()
     mass=float()
+    color=str()
+
     point_x=float()
     point_y=float()
     velocity_x=float()
@@ -42,11 +64,23 @@ class mass_point():
 
     update_events=[]
     
-    def __init__(self,name,mass=1,x=0,y=0):
+    def __init__(self,name,mass=1,color='#0x000000',x=0,y=0):
         self.name=name
         self.mass=mass
+        self.color=color
         self.point_x=x
         self.point_y=y
+
+    def get_attr(self):
+        return(
+            {
+                'name':self.name,
+                'mass':self.mass,
+                'color':self.color,
+                'point_x':self.point_x,
+                'point_y':self.point_y
+            }
+        )
 
     def set_velocity_with_value(self,initial_velocity_x=0,initial_velocity_y=0):
         self.velocity_x=initial_velocity_x
@@ -106,4 +140,7 @@ class mass_point():
         self.point_y+=delta_y
 
         for e in self.update_events:
-            e(self)#同上
+            try:
+                e(self)#同上
+            except:
+                e()
