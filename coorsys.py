@@ -132,14 +132,16 @@ class mass_point():
     def update(self,deltatime):
         original_velocity_x=self.velocity_x
         original_velocity_y=self.velocity_y
-        self.velocity_x+=deltatime*self.acceleration_x+original_velocity_x
-        self.velocity_y+=deltatime*self.acceleration_y+original_velocity_y
+        self.velocity_x=deltatime*self.acceleration_x+original_velocity_x
+        self.velocity_y=deltatime*self.acceleration_y+original_velocity_y
 
         delta_x=original_velocity_x*deltatime+0.5*self.acceleration_x*deltatime**2 #使用匀加速位移公式
         delta_y=original_velocity_y*deltatime+0.5*self.acceleration_y*deltatime**2
 
         self.point_x+=delta_x
         self.point_y+=delta_y
+
+        #print(deltatime*self.acceleration_x+original_velocity_x)
 
         for e in self.update_events:
             try:

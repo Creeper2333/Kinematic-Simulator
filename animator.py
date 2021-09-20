@@ -26,15 +26,16 @@ class animator():
         self.disable_time_interval=d_t_intrval
 
     def update(self):
-        self.coordinates.update(self.time_precision)
-        self.absolute_time+=self.time_precision
-        self.data_transmit(self.coordinates.get_objects())
-        
         for e in self.update_events:
             try:
                 e(self)
             except:
                 e()
+        self.coordinates.update(self.time_precision)
+        self.absolute_time+=self.time_precision
+        self.data_transmit(self.coordinates.get_objects())
+        
+        
     
     def bind_gui_controller(self,gui_ctrl):
         self.gui_controller=gui_ctrl #绑定一个gui控制器，用来传输数据
@@ -43,6 +44,9 @@ class animator():
         data_val=deepcopy(data)
         self.gui_controller.recv_data(data_val)
         data=deepcopy({})
+
+    def output_info(self,info):
+        self.gui_controller.output_info_box(info)
     
     def __start_rendering(self):
         self.gui_controller.make_wnd()
@@ -57,3 +61,4 @@ class animator():
 
     def stop_animation(self):
         self.update_flag=False
+
