@@ -87,9 +87,10 @@ class gui_controller():
                     #arrow='last',arrowshape=(5,5,5),
                     tags=('line')
                     )
-                #print(attr['point_x'],attr['point_y'],attr2['point_x'],attr2['point_y'],count)
+                print(attr['point_x'],attr['point_y'],attr2['point_x'],attr2['point_y'])
                 #self.cvs.create_line(100,100,200,200)
-                count+=1
+            count+=1
+            #count=0
 
         #self.cvs.create_line(100,100,200,200)
             self.absolute_time+=self.precision

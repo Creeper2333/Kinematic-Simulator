@@ -35,6 +35,23 @@ class coordinate_system():
     
     def get_objects(self):
         return self.objects
+
+    def get_obj_distance(self,obj_name_1,obj_name_2):
+        attr=self.objects.get(obj_name_1)[0].get_attr()
+        attr2=self.objects.get(obj_name_2)[0].get_attr()
+
+        len1=attr['point_x']-attr2['point_x']
+        len2=attr['point_y']-attr2['point_y']
+
+        len_sqrt=math.sqrt(len1**2+len2**2)
+
+        return(
+            {
+                'len_x':len1,
+                'len_y':len2,
+                'len_sqrt':len_sqrt
+        }
+        )
     
     def add_customized_event(self,event):
         self.update_events.append(event) #备注：event是一个函数，可以带参数，用于接收传入的self
