@@ -10,20 +10,20 @@ def terminate(self):
         self.stop_animation()
 
 test_coorsys=coordinate_system(precision=0.01)
-test_object=mass_point('A',color='red',x=0,y=200)
+test_object=mass_point('A',color='red',x=0,y=500)
 test_object2=mass_point('B',mass=1,color='green',x=0,y=500)
 
-test_object.set_velocity_with_value(10,0)
-test_object2.set_velocity_with_value(50,0)
+test_object.set_velocity_with_value(0,0)
+test_object2.set_velocity_with_value(50,30)
 test_object.set_acceleration(0,-10)
 test_object2.set_acceleration(0,-10)
 
-#test_coorsys.add_object('A',test_object,False)
+test_coorsys.add_object('A',test_object,False)
 test_coorsys.add_object('B',test_object2,False)
 
 test_animator=animator(0.001,test_coorsys,True)
-test_guictrl=guicontrol.gui_controller(1,0.1,cvs_w=1000,cvs_h=800,info_box_width=500)
-test_guictrl.override_set_zero_point(50,750)
+test_guictrl=guicontrol.gui_controller(1,0.1,cvs_w=800,cvs_h=800,info_box_width=500,use_arrow=True,arrow_intrval=1000)
+test_guictrl.override_set_zero_point(50,600)
 
 test_animator.bind_gui_controller(test_guictrl)
 test_animator.update_events.append(terminate)

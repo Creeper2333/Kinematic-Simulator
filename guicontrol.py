@@ -20,6 +20,8 @@ class gui_controller():
     precision=float() #需要和坐标系的precision对应
     time_scale=float() #需要与animator的time scale对应
     time_precision=float() #需要与animator的time precision 对应
+    use_arrow=True
+    make_arrow_intrval=int() #绘制每几次画一个箭头
     absolute_time=0
     cvs_width=int()
     cvs_height=int()
@@ -29,13 +31,15 @@ class gui_controller():
     zero_point_y=float()
 
     data=[]
-    def __init__(self,precision,time_scale,cvs_w=300,cvs_h=300,info_box_width=300):
+    def __init__(self,precision,time_scale,cvs_w=300,cvs_h=300,info_box_width=300,use_arrow=True,arrow_intrval=20):
 
         self.precision=precision
         self.time_scale=time_scale
         self.cvs_width=cvs_w
         self.cvs_height=cvs_h
         self.info_box_width=info_box_width
+        self.use_arrow=use_arrow
+        self.make_arrow_intrval=arrow_intrval
 
         self.zero_point_x=0.5*self.cvs_width
         self.zero_point_y=0.5*self.cvs_height
@@ -49,7 +53,8 @@ class gui_controller():
         #tmp.clear()
     
     async def draw(self):
-        count=0            
+        count=0
+        make_arrow_count=0            
         for i in self.data:
             await asyncio.sleep(self.time_scale)
             for j in i:
@@ -57,28 +62,55 @@ class gui_controller():
                 if len(self.data)>count+1:
                     attr2=self.data[count+1][i[j].get_attr()['name']].get_attr()
                 else:attr2=deepcopy(attr)
-                self.cvs.create_line(
+                if self.use_arrow and make_arrow_count%self.make_arrow_intrval==0:
+                    self.cvs.create_line(
                     self.zero_point_x+attr['point_x']*self.precision,
                     self.zero_point_y-attr['point_y']*self.precision,
                     self.zero_point_x+attr2['point_x']*self.precision,
                     self.zero_point_y-attr2['point_y']*self.precision,
                     fill=attr['color'],
+                    arrow='last',
+                    arrowshape=(10,10,10),
                     tags=('line')
                     )
+                    print(1)
+                else:
+                    self.cvs.create_line(
+                        self.zero_point_x+attr['point_x']*self.precision,
+                        self.zero_point_y-attr['point_y']*self.precision,
+                        self.zero_point_x+attr2['point_x']*self.precision,
+                        self.zero_point_y-attr2['point_y']*self.precision,
+                        fill=attr['color'],
+                        tags=('line')
+                        )
+                    print(2)
                 
                 count+=1
-
+                make_arrow_count+=1
             self.absolute_time+=self.precision
             
     def draw_new(self):
-        count=0            
+        count=0
+        make_arrow_count=0            
         for i in self.data:
             for j in i:
                 attr=i[j].get_attr()
                 if len(self.data)>count+1:
                     attr2=self.data[count+1][i[j].get_attr()['name']].get_attr()
                 else:attr2=deepcopy(attr)
-                self.cvs.create_line(
+                if self.use_arrow and make_arrow_count%self.make_arrow_intrval==0:
+                    self.cvs.create_line(
+                    self.zero_point_x+attr['point_x']*self.precision,
+                    self.zero_point_y-attr['point_y']*self.precision,
+                    self.zero_point_x+attr2['point_x']*self.precision,
+                    self.zero_point_y-attr2['point_y']*self.precision,
+                    fill=attr['color'],
+                    arrow='last',
+                    arrowshape=(5,10,3),
+                    tags=('line')
+                    )
+                else:
+                    self.cvs.create_line(
                     self.zero_point_x+attr['point_x']*self.precision,
                     self.zero_point_y-attr['point_y']*self.precision,
                     self.zero_point_x+attr2['point_x']*self.precision,
@@ -87,9 +119,10 @@ class gui_controller():
                     #arrow='last',arrowshape=(5,5,5),
                     tags=('line')
                     )
-                print(attr['point_x'],attr['point_y'],attr2['point_x'],attr2['point_y'])
+                #print(attr['point_x'],attr['point_y'],attr2['point_x'],attr2['point_y'])
                 #self.cvs.create_line(100,100,200,200)
             count+=1
+            make_arrow_count+=1
             #count=0
 
         #self.cvs.create_line(100,100,200,200)

@@ -54,9 +54,12 @@ class animator():
     def start_animation(self):
         self.update_flag=True
         self.data_transmit(self.coordinates.get_objects())
+        time0=time.process_time()
         while self.update_flag:
             if not self.disable_time_interval:time.sleep(self.time_scale)
             self.update()
+        time1=time.process_time()
+        print('Calculation finished in',str(time1-time0),'secs.')
         self.__start_rendering()
 
     def stop_animation(self):
